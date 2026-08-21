@@ -1,0 +1,16 @@
+# Config je v prvním návrhu jen čtecí obrazovka nad profily.
+# Editor profilů přijde později — viz DECISIONS.md.
+
+schema  = 1
+id      = "config"
+name    = "Config"
+order   = 60
+tagline = "Profily, provider, kontrola"
+summary = "Přehled načtených profilů, jejich dědičnosti a aktivního system provideru. Jen ke čtení."
+layer   = "off"
+view    = "config"
+
+[context]
+label = "Zdroj profilů"
+path  = "profiles/"
+note  = "Změna profilu se projeví po restartu aplikace."

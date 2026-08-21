@@ -1,0 +1,56 @@
+# Škola není samostatná konfigurace — je to vrstva nad Developmentem.
+# `extends` přebírá vše z development.toml, níže se jen doplňuje a odebírá.
+
+schema  = 1
+extends = "development"
+id      = "skola"
+name    = "Škola"
+order   = 20
+tagline = "Development + výuka"
+summary = "Vrstva nad Developmentem: k editoru a terminálu přibývá poznámkový systém, rozvrh a odevzdávárna."
+
+# Pozor: klíče kořene profilu musí stát PŘED první sekcí [..] nebo [[..]].
+# Za sekcí by je TOML přiřadil do ní, ne do profilu. Načítání to dnes odchytí
+# jako chybu, ale je jednodušší psát je rovnou nahoru.
+# Repozitář v prohlížeči je pro školní režim šum — odeber zděděnou položku.
+remove_launch = ["repo"]
+
+[context]
+label = "Aktivní předmět"
+path  = "{PROJECTS}/Skola"
+repo  = "github.com/tomas/skola"
+note  = "Zděděno z Developmentu, přepsána cesta i poznámka."
+
+[[launch]]
+id     = "poznamky"
+label  = "Poznámky"
+kind   = "folder"
+target = "{CONTEXT_PATH}/poznamky"
+
+[[launch]]
+id     = "rozvrh"
+label  = "Rozvrh"
+kind   = "url"
+target = "https://www.bakalari.cz"
+
+[[launch]]
+id       = "odevzdavarna"
+label    = "Odevzdávárna"
+kind     = "url"
+target   = "https://classroom.google.com"
+optional = true
+
+[[kill]]
+id       = "discord"
+label    = "Discord"
+match    = "Discord.exe"
+reason   = "Notifikace během výuky."
+severity = "strong"
+
+# Spotify je ve školním režimu tvrdší návrh než v Developmentu — přepiš zděděnou položku.
+[[kill]]
+id       = "spotify"
+label    = "Spotify"
+match    = "Spotify.exe"
+reason   = "Při výuce ruší; v Developmentu je to jen měkký návrh."
+severity = "suggest"

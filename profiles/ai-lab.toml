@@ -1,0 +1,63 @@
+schema  = 1
+id      = "ai-lab"
+name    = "AI / Lab"
+order   = 30
+tagline = "Notebooky, modely, měření"
+summary = "Prostředí pro experimenty: Jupyter, lokální inference, prostor v RAM. Režim počítá s tím, že GPU není."
+layer   = "on"
+
+[context]
+label = "Aktivní lab"
+path  = "{PROJECTS}/Skola/ioai"
+repo  = "github.com/tomas/ioai-lab"
+note  = "Baseline před další změnou. Jedna změna, jedno měření, jeden zápis do logu."
+
+[[launch]]
+id     = "jupyter"
+label  = "JupyterLab"
+kind   = "shell"
+target = "jupyter"
+args   = ["lab", "--notebook-dir", "{CONTEXT_PATH}"]
+note   = "spouští se v kořeni labu"
+
+[[launch]]
+id     = "editor"
+label  = "Visual Studio Code"
+kind   = "app"
+target = "code"
+args   = ["{CONTEXT_PATH}"]
+
+[[launch]]
+id       = "runlog"
+label    = "Log běhů"
+kind     = "folder"
+target   = "{CONTEXT_PATH}/runs"
+optional = true
+
+[[kill]]
+id       = "chrome"
+label    = "Chrome (záložky navíc)"
+match    = "chrome.exe"
+reason   = "Prohlížeč je největší žrout RAM, kterou lab potřebuje."
+severity = "strong"
+
+[[kill]]
+id       = "steam"
+label    = "Steam"
+match    = "steam.exe"
+reason   = "Herní klient soupeří o RAM i disk."
+severity = "strong"
+
+[[kill]]
+id       = "teams"
+label    = "Microsoft Teams"
+match    = "ms-teams.exe"
+reason   = "Trvale rezidentní, notifikace uprostřed běhu."
+severity = "suggest"
+
+[[kill]]
+id       = "docker"
+label    = "Docker Desktop"
+match    = "Docker Desktop.exe"
+reason   = "Pokud zrovna netočíš kontejner, drží několik GB."
+severity = "soft"

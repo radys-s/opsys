@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.vite/
+src-tauri/target/
+src-tauri/gen/
+*.log
+.DS_Store
+Thumbs.db
+
+# tajemství — v projektu žádné nejsou, pravidlo je tu pro budoucnost
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*credentials*
+*secret*

@@ -1,0 +1,60 @@
+schema  = 1
+id      = "hry"
+name    = "Hry"
+order   = 40
+tagline = "Klient, hlas, nahrávání"
+summary = "Herní klient a hlasový kanál nahoře, pracovní nástroje dole. Nic se nevypíná bez potvrzení."
+layer   = "on"
+
+[context]
+label = "Poslední relace"
+path  = "{HOME}/Videos/Captures"
+note  = "Složka nahrávek. Repozitář se v tomto režimu nesleduje."
+
+[[launch]]
+id     = "steam"
+label  = "Steam"
+kind   = "app"
+target = "steam"
+
+[[launch]]
+id       = "discord"
+label    = "Discord"
+kind     = "app"
+target   = "discord"
+optional = true
+
+[[launch]]
+id       = "captures"
+label    = "Složka nahrávek"
+kind     = "folder"
+target   = "{CONTEXT_PATH}"
+optional = true
+
+[[kill]]
+id       = "code"
+label    = "Visual Studio Code"
+match    = "Code.exe"
+reason   = "Jazykové servery a watchery drží CPU i při nečinnosti."
+severity = "suggest"
+
+[[kill]]
+id       = "ollama"
+label    = "Ollama"
+match    = "ollama.exe"
+reason   = "Lokální inference si drží RAM, kterou chce hra."
+severity = "strong"
+
+[[kill]]
+id       = "docker"
+label    = "Docker Desktop"
+match    = "Docker Desktop.exe"
+reason   = "Virtualizační backend na pozadí."
+severity = "strong"
+
+[[kill]]
+id       = "node"
+label    = "Node.js (dev server)"
+match    = "node.exe"
+reason   = "Zapomenutý dev server z předchozího režimu."
+severity = "suggest"

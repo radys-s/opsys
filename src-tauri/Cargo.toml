@@ -1,0 +1,36 @@
+[package]
+name = "opsys"
+version = "0.1.0"
+description = "OP sys - ovladaci centrum pracovnich rezimu"
+edition = "2021"
+rust-version = "1.77"
+publish = false
+
+[lib]
+# Jmeno se lisi od binarky schvalne: na Windows by jinak kolidoval nazev
+# vystupniho souboru knihovny a spustitelneho souboru.
+name = "opsys_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+
+# Cteni telemetrie potrebuje jen Windows provider. Na ostatnich systemech
+# se zavislost vubec nestahuje - mock zadnou nepotrebuje.
+[target.'cfg(windows)'.dependencies]
+sysinfo = "0.32"
+
+[features]
+default = []
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

@@ -1,0 +1,61 @@
+# OP sys — profil režimu
+# Formát: viz README.md → "Jak přidat profil".
+# Placeholdery v cestách ({HOME}, {PROJECTS}, {DESKTOP}, {DOWNLOADS}, {CONTEXT_PATH})
+# rozbaluje až SystemProvider za běhu. V profilu nikdy nesmí být absolutní cesta.
+
+schema  = 1
+id      = "development"
+name    = "Development"
+order   = 10
+tagline = "Kód, terminál, verzování"
+summary = "Editor nad aktivním repozitářem, terminál v kořeni projektu, kontext poslední větve."
+layer   = "on"
+
+[context]
+label = "Aktivní projekt"
+path  = "{PROJECTS}/Osobni"
+repo  = "github.com/tomas/osobni"
+note  = "Rozdělaná větev feat/profiles. Před přepnutím režimu commitni."
+
+[[launch]]
+id     = "editor"
+label  = "Visual Studio Code"
+kind   = "app"
+target = "code"
+args   = ["{CONTEXT_PATH}"]
+note   = "otevře kořen projektu"
+
+[[launch]]
+id     = "terminal"
+label  = "Windows Terminal"
+kind   = "app"
+target = "wt"
+args   = ["-d", "{CONTEXT_PATH}"]
+
+[[launch]]
+id       = "repo"
+label    = "Repozitář v prohlížeči"
+kind     = "url"
+target   = "https://{CONTEXT_REPO}"
+optional = true
+
+[[kill]]
+id       = "steam"
+label    = "Steam"
+match    = "steam.exe"
+reason   = "Herní klient drží RAM a síť, do developmentu nepatří."
+severity = "suggest"
+
+[[kill]]
+id       = "epic"
+label    = "Epic Games Launcher"
+match    = "EpicGamesLauncher.exe"
+reason   = "Launcher na pozadí, žádný přínos pro režim."
+severity = "suggest"
+
+[[kill]]
+id       = "spotify"
+label    = "Spotify"
+match    = "Spotify.exe"
+reason   = "Volitelné — nech běžet, pokud u kódu posloucháš."
+severity = "soft"

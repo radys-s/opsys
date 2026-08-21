@@ -1,0 +1,15 @@
+# Unlock je pojistka: vrstva je vypnutá.
+# Prázdné seznamy nejsou nedodělek — jsou to invarianty 1 a 3.
+# Nic nespouští, nic nenabízí k ukončení, nic neblokuje.
+
+schema  = 1
+id      = "unlock"
+name    = "Unlock"
+order   = 50
+tagline = "Vrstva vypnuta"
+summary = "Windows běží bez zásahu OP sys. Žádné spouštění, žádné návrhy na ukončení, žádné blokování."
+layer   = "off"
+
+[context]
+label = "Kontext"
+note  = "Bez kontextu. Unlock záměrně nic neobnovuje."

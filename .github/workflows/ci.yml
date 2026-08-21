@@ -1,0 +1,68 @@
+name: CI
+
+# Windows je cílová platforma, takže se staví a testuje přímo na ní.
+# Pořadí kroků není libovolné: `tauri-build` při kompilaci kontroluje, že
+# existuje `frontendDist` (../dist), proto musí frontend build proběhnout
+# dřív než cokoli z Rustu.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Testy Rustu si samy hledají složku profilů; v CI ji dostanou natvrdo,
+  # aby výsledek nezávisel na tom, odkud cargo spustí testovací binárku.
+  OPSYS_PROFILES_DIR: ${{ github.workspace }}/profiles
+
+jobs:
+  build:
+    name: build + test (windows)
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalace závislostí
+        run: npm ci
+
+      - name: Testy frontendu
+        run: npm run test
+
+      - name: Kontrola typů a build frontendu
+        run: npm run build
+
+      - name: Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      # Poradní, ne blokující: Rust se na stroji, kde projekt vznikl, nedal
+      # spustit (chybí toolchain), takže první běh CI je zároveň první běh
+      # rustfmt a clippy. Až se výstup jednou srovná, zahoď continue-on-error.
+      - name: Formátování Rustu (poradní)
+        continue-on-error: true
+        run: cargo fmt --manifest-path src-tauri/Cargo.toml --all -- --check
+
+      - name: Clippy (poradní)
+        continue-on-error: true
+        run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+
+      - name: Testy Rustu
+        run: cargo test --manifest-path src-tauri/Cargo.toml --all-targets
+
+      - name: Build aplikace
+        run: cargo build --manifest-path src-tauri/Cargo.toml --release
