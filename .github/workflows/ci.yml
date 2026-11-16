@@ -23,10 +23,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -50,15 +50,10 @@ jobs:
         with:
           workspaces: src-tauri
 
-      # Poradní, ne blokující: Rust se na stroji, kde projekt vznikl, nedal
-      # spustit (chybí toolchain), takže první běh CI je zároveň první běh
-      # rustfmt a clippy. Až se výstup jednou srovná, zahoď continue-on-error.
-      - name: Formátování Rustu (poradní)
-        continue-on-error: true
+      - name: Formátování Rustu
         run: cargo fmt --manifest-path src-tauri/Cargo.toml --all -- --check
 
-      - name: Clippy (poradní)
-        continue-on-error: true
+      - name: Clippy
         run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 
       - name: Testy Rustu

@@ -96,7 +96,9 @@ pub struct MockProvider {
 
 impl MockProvider {
     pub fn new() -> Self {
-        Self { state: Mutex::new(MockState::default()) }
+        Self {
+            state: Mutex::new(MockState::default()),
+        }
     }
 
     /// Posune čas o jeden krok a vrátí nové číslo ticku.
@@ -172,8 +174,9 @@ impl SystemProvider for MockProvider {
             kind: ProviderKind::Mock,
             label: "MockProvider".to_string(),
             can_write: true,
-            note: "Simulace. Žádný proces se reálně neukončuje, žádná aplikace se reálně nespouští."
-                .to_string(),
+            note:
+                "Simulace. Žádný proces se reálně neukončuje, žádná aplikace se reálně nespouští."
+                    .to_string(),
         }
     }
 
@@ -212,7 +215,10 @@ impl SystemProvider for MockProvider {
         paths.insert("HOME".to_string(), "C:/Users/mock".to_string());
         paths.insert("PROJECTS".to_string(), "C:/Users/mock/Projekty".to_string());
         paths.insert("DESKTOP".to_string(), "C:/Users/mock/Desktop".to_string());
-        paths.insert("DOWNLOADS".to_string(), "C:/Users/mock/Downloads".to_string());
+        paths.insert(
+            "DOWNLOADS".to_string(),
+            "C:/Users/mock/Downloads".to_string(),
+        );
         paths
     }
 
@@ -222,7 +228,10 @@ impl SystemProvider for MockProvider {
             "folder" => !target.contains('{'),
             _ => {
                 let file = target.rsplit(['/', '\\']).next().unwrap_or(target);
-                let stem = file.strip_suffix(".exe").unwrap_or(file).to_ascii_lowercase();
+                let stem = file
+                    .strip_suffix(".exe")
+                    .unwrap_or(file)
+                    .to_ascii_lowercase();
                 KNOWN_TARGETS.contains(&stem.as_str())
             }
         }
@@ -281,7 +290,10 @@ mod tests {
             let snapshot = provider.snapshot().unwrap();
             let m = snapshot.metrics;
             assert!(m.ram_used_mb < m.ram_total_mb, "RAM přeteklo: {m:?}");
-            assert!((1.0..=99.0).contains(&m.cpu_percent), "CPU mimo rozsah: {m:?}");
+            assert!(
+                (1.0..=99.0).contains(&m.cpu_percent),
+                "CPU mimo rozsah: {m:?}"
+            );
             let temp = m.temp_c.unwrap();
             assert!((30.0..=95.0).contains(&temp), "teplota mimo rozsah: {m:?}");
         }

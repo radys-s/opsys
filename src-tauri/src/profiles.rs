@@ -311,7 +311,7 @@ fn resolve_one(
 ) -> Result<Profile, String> {
     let id = raw.id.clone().unwrap_or_default();
 
-    if seen.iter().any(|existing| *existing == id) {
+    if seen.contains(&id) {
         seen.push(id);
         return Err(format!("cyklická dědičnost: {}", seen.join(" -> ")));
     }
@@ -324,9 +324,9 @@ fn resolve_one(
     let base = match &raw.extends {
         None => empty_profile(&id),
         Some(parent_id) => {
-            let parent = by_id.get(parent_id).ok_or_else(|| {
-                format!("extends = \"{parent_id}\" — takový profil neexistuje")
-            })?;
+            let parent = by_id
+                .get(parent_id)
+                .ok_or_else(|| format!("extends = \"{parent_id}\" — takový profil neexistuje"))?;
             seen.push(id);
             let resolved = resolve_one(parent, by_id, seen)?;
             seen.pop();
@@ -481,8 +481,7 @@ pub fn load() -> ProfileBundle {
             profiles: Vec::new(),
             problems: vec![ProfileProblem {
                 file: "profiles/".to_string(),
-                message: "složka profiles/ nebyla nalezena — nastav OPSYS_PROFILES_DIR"
-                    .to_string(),
+                message: "složka profiles/ nebyla nalezena — nastav OPSYS_PROFILES_DIR".to_string(),
             }],
         },
     }
@@ -504,10 +503,7 @@ pub fn expand_placeholders(input: &str, vars: &BTreeMap<String, String>) -> Stri
         };
 
         let key = &after[..end];
-        let is_key = !key.is_empty()
-            && key
-                .chars()
-                .all(|c| c.is_ascii_uppercase() || c == '_');
+        let is_key = !key.is_empty() && key.chars().all(|c| c.is_ascii_uppercase() || c == '_');
 
         out.push_str(&rest[..start]);
         match vars.get(key) {
@@ -532,9 +528,7 @@ pub fn has_unresolved_placeholder(input: &str) -> bool {
         match after.find('}') {
             Some(end) => {
                 let key = &after[..end];
-                if !key.is_empty()
-                    && key.chars().all(|c| c.is_ascii_uppercase() || c == '_')
-                {
+                if !key.is_empty() && key.chars().all(|c| c.is_ascii_uppercase() || c == '_') {
                     return true;
                 }
                 rest = &after[end + 1..];
@@ -602,7 +596,11 @@ mod tests {
         assert_eq!(skola.context.path.as_deref(), Some("{PROJECTS}/Skola"));
         assert_eq!(skola.context.note.as_deref(), Some("poznamka rodice"));
         assert_eq!(
-            skola.launch.iter().map(|l| l.id.as_str()).collect::<Vec<_>>(),
+            skola
+                .launch
+                .iter()
+                .map(|l| l.id.as_str())
+                .collect::<Vec<_>>(),
             vec!["editor", "repo"]
         );
     }
@@ -623,7 +621,11 @@ mod tests {
         let bundle = bundle_from(&[("development.toml", PARENT), ("skola.toml", child)]);
         let skola = bundle.find("skola").unwrap();
         assert_eq!(
-            skola.launch.iter().map(|l| l.id.as_str()).collect::<Vec<_>>(),
+            skola
+                .launch
+                .iter()
+                .map(|l| l.id.as_str())
+                .collect::<Vec<_>>(),
             vec!["editor", "rozvrh"]
         );
     }
@@ -652,7 +654,10 @@ mod tests {
         );
         assert_eq!(skola.kill[0].severity, Severity::Strong);
         // rodič zůstal nedotčený
-        assert_eq!(bundle.find("development").unwrap().kill[0].severity, Severity::Soft);
+        assert_eq!(
+            bundle.find("development").unwrap().kill[0].severity,
+            Severity::Soft
+        );
     }
 
     #[test]
@@ -703,7 +708,11 @@ mod tests {
 
         assert!(bundle.problems.is_empty(), "{:?}", bundle.problems);
         assert_eq!(
-            bundle.profiles.iter().map(|p| p.id.as_str()).collect::<Vec<_>>(),
+            bundle
+                .profiles
+                .iter()
+                .map(|p| p.id.as_str())
+                .collect::<Vec<_>>(),
             vec!["development", "skola", "ai-lab", "hry", "unlock", "config"]
         );
 

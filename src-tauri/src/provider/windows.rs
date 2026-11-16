@@ -97,10 +97,7 @@ impl SystemProvider for WindowsProvider {
             .iter()
             .map(|(pid, process)| {
                 let name = process.name().to_string_lossy().to_string();
-                let label = name
-                    .strip_suffix(".exe")
-                    .unwrap_or(&name)
-                    .to_string();
+                let label = name.strip_suffix(".exe").unwrap_or(&name).to_string();
 
                 ProcessInfo {
                     pid: pid.as_u32(),
@@ -113,7 +110,7 @@ impl SystemProvider for WindowsProvider {
             })
             .collect();
 
-        out.sort_by(|a, b| b.memory_mb.cmp(&a.memory_mb));
+        out.sort_by_key(|a| std::cmp::Reverse(a.memory_mb));
         Ok(out)
     }
 
