@@ -18,9 +18,7 @@ use crate::profiles::{
     expand_placeholders, has_unresolved_placeholder, KillRule, LaunchItem, LayerState, Profile,
     ProfileBundle, ProjectContext,
 };
-use crate::provider::{
-    LaunchOutcome, ProcessInfo, Snapshot, SystemProvider, TerminateOutcome,
-};
+use crate::provider::{LaunchOutcome, ProcessInfo, Snapshot, SystemProvider, TerminateOutcome};
 
 pub struct AppState {
     pub provider: Box<dyn SystemProvider>,
@@ -44,10 +42,8 @@ pub struct KillCandidate {
     pub process: ProcessInfo,
 }
 
-const LAYER_OFF: &str =
-    "Vrstva je v tomto režimu vypnutá — OP sys nic nespouští ani neukončuje.";
-const READ_ONLY: &str =
-    "Aktivní provider je jen pro čtení — v této verzi se nic reálně neprovádí.";
+const LAYER_OFF: &str = "Vrstva je v tomto režimu vypnutá — OP sys nic nespouští ani neukončuje.";
+const READ_ONLY: &str = "Aktivní provider je jen pro čtení — v této verzi se nic reálně neprovádí.";
 
 /// Placeholdery pro rozbalení cest: od provideru plus kontext samotného profilu.
 fn placeholder_vars(provider: &dyn SystemProvider, profile: &Profile) -> BTreeMap<String, String> {
@@ -123,11 +119,8 @@ pub fn resolve_context(profile_id: String, state: State<'_, AppState>) -> Projec
     };
 
     let vars = placeholder_vars(state.provider.as_ref(), profile);
-    let expand = |value: &Option<String>| {
-        value
-            .as_ref()
-            .map(|text| expand_placeholders(text, &vars))
-    };
+    let expand =
+        |value: &Option<String>| value.as_ref().map(|text| expand_placeholders(text, &vars));
 
     ProjectContext {
         label: profile.context.label.clone(),
@@ -338,7 +331,9 @@ mod tests {
         let state = state();
         let running = state.provider.processes().unwrap();
         assert!(
-            running.iter().any(|p| p.name == "explorer.exe" && p.protected),
+            running
+                .iter()
+                .any(|p| p.name == "explorer.exe" && p.protected),
             "explorer.exe má v mocku běžet a být chráněný"
         );
 
